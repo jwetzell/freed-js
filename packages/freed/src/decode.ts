@@ -1,0 +1,42 @@
+import { FreeDPosition } from './types';
+import { checksum, freeDUnitsToPosition, freeDUnitsToRotation } from './utils';
+
+export function decode(bytes: Uint8Array): FreeDPosition | undefined {
+  if (checksum(bytes) !== bytes[bytes.length - 1]) {
+    throw new Error('freeD packet failed checksum');
+  }
+
+  const messageType = bytes[0];
+
+  switch (messageType) {
+    case 0xd1:
+      if (bytes.length !== 29) {
+        throw new Error('freeD D1 message should be 29 bytes long');
+      }
+      const id = bytes[1];
+      const pan = freeDUnitsToRotation(bytes[2], bytes[3], bytes[4]);
+      const tilt = freeDUnitsToRotation(bytes[5], bytes[6], bytes[7]);
+      const roll = freeDUnitsToRotation(bytes[8], bytes[9], bytes[10]);
+
+      const posX = freeDUnitsToPosition(bytes[11], bytes[12], bytes[13]);
+      const posY = freeDUnitsToPosition(bytes[14], bytes[15], bytes[16]);
+      const posZ = freeDUnitsToPosition(bytes[17], bytes[18], bytes[19]);
+
+      const zoom = bytes[20] * 65536 + bytes[21] * 256 + bytes[22];
+      const focus = bytes[23] * 65536 + bytes[24] * 256 + bytes[25];
+      return {
+        type: 0xd1,
+        id,
+        pan,
+        tilt,
+        roll,
+        posX,
+        posY,
+        posZ,
+        zoom,
+        focus,
+      };
+    default:
+      throw new Error('unsupported freeD message type');
+  }
+}
