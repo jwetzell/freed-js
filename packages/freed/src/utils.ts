@@ -1,7 +1,7 @@
 export function checksum(bytes: Uint8Array): number {
   let checksum = 0x40;
 
-  bytes.slice(0, 28).forEach((byte) => {
+  bytes.forEach((byte) => {
     checksum -= byte;
     if (checksum < 0) {
       checksum += 256;
