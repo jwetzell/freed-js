@@ -1,4 +1,4 @@
-import { FreeDPoll, FreeDPosition } from './types';
+import { FreeDPosition } from './types';
 import { checksum, positionToFreeDUnits, rotationToFreeDUnits } from './utils';
 
 function positionMessageToBytes(message: FreeDPosition): Uint8Array {
@@ -23,6 +23,10 @@ function positionMessageToBytes(message: FreeDPosition): Uint8Array {
   bytes[24] = message.focus >> 8;
   bytes[25] = message.focus % 256;
 
+  if (message.spare !== undefined) {
+    bytes[26] = message.spare >> 8;
+    bytes[27] = message.spare % 256;
+  }
 
   bytes[28] = checksum(bytes.subarray(0, 28));
   return bytes;

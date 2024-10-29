@@ -14,6 +14,8 @@ function bytesToPositionMessage(bytes: Uint8Array): FreeDPosition {
   const zoom = bytes[20] * 65536 + bytes[21] * 256 + bytes[22];
   const focus = bytes[23] * 65536 + bytes[24] * 256 + bytes[25];
 
+  const spare = bytes[26] * 256 + bytes[27]
+
   return {
     type: 0xd1,
     id,
@@ -25,6 +27,7 @@ function bytesToPositionMessage(bytes: Uint8Array): FreeDPosition {
     posZ,
     zoom,
     focus,
+    spare
   };
 }
 export function decode(bytes: Uint8Array): FreeDPosition | undefined {

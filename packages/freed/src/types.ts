@@ -9,4 +9,5 @@ export type FreeDPosition = {
   posY: number;
   zoom: number;
   focus: number;
+  spare?: number;
 };
